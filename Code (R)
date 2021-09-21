@@ -1,0 +1,36 @@
+library(ggplot2) ## Used for creating graphics
+library(magrittr) ## Used for the %>% operator 
+library(dplyr) ## Used to transform and summarize tabular data with rows and columns
+
+## Code for clearing console
+cat("\014") 
+
+# Read file
+Vaccine <- read.csv("C:\\Users\\alana\\Documents\\Alana University\\CS320\\covid\\2 us-daily-covid-vaccine-doses-administered-update-4-1-2021.csv")
+
+# Grouping the data by Day
+ex1 <- Vaccine %>%
+  group_by(Day) %>% 
+  mutate(x = order(Day)) %>%
+  arrange(Day, x) %>%
+   summarise(
+  
+  Locations = n(), ## Get the total number of locations that administered the vaccine
+  
+  Total_Vaccinations = sum(as.numeric(daily_vaccinations)) ## Adds all the administered doses and gives the total number for that day
+  )
+
+print(ex1, n = Inf) ## Prints a table of the summarized data
+
+
+## Plots a line graph of the summarized data
+Plot <- ggplot(ex1, aes(x = Day , y = Total_Vaccinations, group = 1)) +
+        geom_line(linetype = "dashed", color="red", size = 1) +
+        geom_point(color="blue", size = 2) +
+        theme(axis.title.x = element_text(color = "red"), axis.title.y = element_text(colour = "blue"), axis.line = element_line(color = "black"), panel.background = element_rect(fill = "light grey")) +
+       labs(
+        x = "Date",
+       y = "Total Vaccinations",
+       title = paste("Total Of Vaccinations Per Week (1/13 - 3/29)")
+      ) 
+Plot
